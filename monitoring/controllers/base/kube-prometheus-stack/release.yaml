@@ -26,6 +26,11 @@ spec:
         target:
           kind: PrometheusRule
   values:
+    prometheus:
+      prometheusSpec:
+        podMonitorSelectorNilUsesHelmValues: false
+        serviceMonitorSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
     grafana:
       adminPassword: ivan
       ingress:
