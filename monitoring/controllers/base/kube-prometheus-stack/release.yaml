@@ -36,6 +36,9 @@ spec:
         existingSecret: grafana-credentials
         userKey: username
         passwordKey: password
+      persistence:
+        enabled: true
+        size: 2Gi
       ingress:
         enabled: true
         hosts:
