@@ -46,6 +46,9 @@ I installed the kube-prometheus-stack helm chart and use Grafana to monitor the 
 
 A minimalist RSS reader hosted as a single pod with a postgres database running in the cluster. The operator behind the postgres database is [CloudNativePG](https://cloudnative-pg.io/).
 
+### 2. [Atuin](https://atuin.sh/)
+
+A self-hosted sync server for Atuin. The database is in a CloudNativePG postgres cluster.
 
 ## Environments
 
