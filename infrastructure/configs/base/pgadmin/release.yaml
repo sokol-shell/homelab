@@ -1,0 +1,56 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pgadmin
+  namespace: pgadmin
+spec:
+  interval: 30m0s
+  chart:
+    spec:
+      chart: pgadmin4
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: pgadmin
+        namespace: pgadmin
+      version: 1.70.x
+  values:
+    containerPorts:
+      http: 8080
+    containerSecurityContext:
+      enabled: true
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+          - ALL
+      seccompProfile:
+        type: RuntimeDefault
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      hosts:
+        - host: pgadmin.staging.sokol.sh
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - pgadmin.staging.sokol.sh
+    persistentVolume:
+      size: "1Gi"
+    existingSecret: pgadmin-credentials
+    env:
+      email: ivan@sokol.sh
+    serverDefinitions:
+      enabled: true
+      servers:
+        miniflux:
+          Name: miniflux
+          Group: Servers
+          Host: miniflux-rw.miniflux.svc
+          Port: 5432
+          MaintenanceDB: miniflux
+          Username: miniflux
+          SSLMode: prefer
