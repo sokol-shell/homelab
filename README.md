@@ -2,6 +2,20 @@
 
 A single-node k3s Kubernetes cluster where I self-host various applications.
 
+## GitOps with Flux
+
+[Flux](https://fluxcd.io/) watches the `master` branch of this repo and reconciles the clusters. The dependency diagram currently looks like this:
+
+```
+infrastructure-controllers   (infrastructure/controllers/staging)
+├── infrastructure-configs   (infrastructure/configs/staging)
+└── apps                     (apps/staging)
+
+monitoring-controllers       (monitoring/controllers/staging)
+```
+
+Children wait for the controller above them to be healthy before they reconcile.
+
 ## Infrastructure
 
 ### 1. [Renovate](https://docs.renovatebot.com/)

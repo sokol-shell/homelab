@@ -32,7 +32,10 @@ spec:
         serviceMonitorSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
     grafana:
-      adminPassword: ivan
+      admin:
+        existingSecret: grafana-credentials
+        userKey: username
+        passwordKey: password
       ingress:
         enabled: true
         hosts:
