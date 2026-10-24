@@ -50,6 +50,10 @@ A minimalist RSS reader hosted as a single pod with a postgres database running 
 
 A self-hosted sync server for Atuin. The database is in a CloudNativePG postgres cluster.
 
+### 3. [n8n](https://n8n.io/)
+
+Workflows, credentials and execution history are stored in a CloudNativePG postgres cluster. Currently used only for AI code reviews on GitHub.
+
 ## Environments
 
 Currently, a single-node staging environment is running until a second node comes where I'll create a prod environment and leave the staging for testing and development.

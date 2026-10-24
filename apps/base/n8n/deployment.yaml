@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # labels:
+  #   app.kubernetes.io/component: automation
+  #   app.kubernetes.io/instance: n8n
+  #   app.kubernetes.io/name: n8n
+  name: n8n
+  namespace: n8n
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: n8n
+  template:
+    metadata:
+      labels:
+        app: n8n
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: n8n-configmap
+        - secretRef:
+            name: n8n-secrets
+        env:
+          - name: DB_POSTGRESDB_HOST
+            valueFrom: { secretKeyRef: { name: n8n-app, key: host } }
+          - name: DB_POSTGRESDB_PORT
+            valueFrom: { secretKeyRef: { name: n8n-app, key: port } }
+          - name: DB_POSTGRESDB_DATABASE
+            valueFrom: { secretKeyRef: { name: n8n-app, key: dbname } }
+          - name: DB_POSTGRESDB_USER
+            valueFrom: { secretKeyRef: { name: n8n-app, key: username } }
+          - name: DB_POSTGRESDB_PASSWORD
+            valueFrom: { secretKeyRef: { name: n8n-app, key: password } }
+        image: docker.n8n.io/n8nio/n8n:2.44.6
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 3008
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: n8n
+        ports:
+          - containerPort: 3008
+            protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 3008
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 250m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: false
+      restartPolicy: Always
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault

@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: n8n
+  namespace: n8n
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - n8n.staging.sokol.sh
+  rules:
+  - host: n8n.staging.sokol.sh
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: n8n
+            port:
+              number: 3008
