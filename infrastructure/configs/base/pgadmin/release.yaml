@@ -43,6 +43,9 @@ spec:
     existingSecret: pgadmin-credentials
     env:
       email: ivan@sokol.sh
+      variables:
+        - name: PGADMIN_REPLACE_SERVERS_ON_STARTUP
+          value: "True"
     serverDefinitions:
       enabled: true
       servers:
@@ -53,4 +56,12 @@ spec:
           Port: 5432
           MaintenanceDB: miniflux
           Username: miniflux
+          SSLMode: prefer
+        atuin:
+          Name: atuin
+          Group: Servers
+          Host: atuin-rw.atuin.svc
+          Port: 5432
+          MaintenanceDB: atuin
+          Username: atuin
           SSLMode: prefer
