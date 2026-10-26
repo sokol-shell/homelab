@@ -2,7 +2,7 @@
 KUBECONFIG = "{{config_root}}/kubeconfig"
 
 [tools]
-flux2 = "2.9"
+flux2 = "2.10.0"
 kubectl = "1.37"
 k9s = "0.51.0"
 sops = "3.13.3"
