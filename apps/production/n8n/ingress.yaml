@@ -1,21 +1,21 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: linkding
-  namespace: linkding
+  name: n8n
+  namespace: n8n
 spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - linkding.staging.sokol.sh
+        - n8n..sokol.sh
   rules:
-  - host: linkding.staging.sokol.sh
+  - host: n8n..sokol.sh
     http:
       paths:
       - pathType: Prefix
         path: "/"
         backend:
           service:
-            name: linkding
-            port: 
-              number: 9090
+            name: n8n
+            port:
+              number: 3008

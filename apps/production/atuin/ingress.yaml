@@ -7,9 +7,9 @@ spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - atuin.staging.sokol.sh
+        - atuin..sokol.sh
   rules:
-  - host: atuin.staging.sokol.sh
+  - host: atuin..sokol.sh
     http:
       paths:
       - pathType: Prefix

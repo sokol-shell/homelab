@@ -1,21 +1,21 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: miniflux
-  namespace: miniflux
+  name: linkding
+  namespace: linkding
 spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - rss.staging.sokol.sh
+        - linkding..sokol.sh
   rules:
-  - host: rss.staging.sokol.sh
+  - host: linkding..sokol.sh
     http:
       paths:
       - pathType: Prefix
         path: "/"
         backend:
           service:
-            name: miniflux
+            name: linkding
             port: 
-              number: 8080
+              number: 9090

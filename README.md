@@ -1,17 +1,17 @@
 # Kubernetes Homelab
 
-A single-node k3s Kubernetes cluster where I self-host various applications.
+A two-node k3s Kubernetes cluster where I self-host various applications.
 
 ## GitOps with Flux
 
 [Flux](https://fluxcd.io/) watches the `master` branch of this repo and reconciles the clusters. The dependency diagram currently looks like this:
 
 ```
-infrastructure-controllers   (infrastructure/controllers/staging)
-├── infrastructure-configs   (infrastructure/configs/staging)
-└── apps                     (apps/staging)
+infrastructure-controllers   (infrastructure/controllers/production)
+├── infrastructure-configs   (infrastructure/configs/production)
+└── apps                     (apps/production)
 
-monitoring-controllers       (monitoring/controllers/staging)
+monitoring-controllers       (monitoring/controllers/production)
 ```
 
 Children wait for the controller above them to be healthy before they reconcile.
@@ -56,4 +56,4 @@ Workflows, credentials and execution history are stored in a CloudNativePG postg
 
 ## Environments
 
-Currently, a single-node staging environment is running until a second node comes where I'll create a prod environment and leave the staging for testing and development.
+Currently, only production environment is running until more nodes come where I'll create a staging environment for testing.

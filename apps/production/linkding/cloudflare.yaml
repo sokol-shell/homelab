@@ -62,7 +62,7 @@ metadata:
   name: cloudflared
 data:
   config.yaml: |
-    tunnel: homelab-staging
+    tunnel: homelab-production
 
     credentials-file: /etc/cloudflared/creds/credentials.json
 
@@ -71,7 +71,7 @@ data:
     no-autoupdate: true
 
     ingress:
-    - hostname: homelab-staging.sokol.sh
+    - hostname: homelab-.sokol.sh
       service: http://linkding:9090
 
     # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.

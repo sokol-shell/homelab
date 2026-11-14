@@ -1,13 +1,13 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: wildcard-staging-sokol-sh
+  name: wildcard-production-sokol-sh
   namespace: kube-system
 spec:
-  secretName: wildcard-staging-sokol-sh-tls
+  secretName: wildcard-production-sokol-sh-tls
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer
   dnsNames:
-    - "staging.sokol.sh"
-    - "*.staging.sokol.sh"
+    - ".sokol.sh"
+    - "*..sokol.sh"

@@ -4,4 +4,4 @@ metadata:
   name: miniflux-configmap
   namespace: miniflux
 data:
-  BASE_URL: "https://rss.staging.sokol.sh"
+  BASE_URL: "https://rss..sokol.sh"
