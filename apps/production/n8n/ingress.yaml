@@ -7,9 +7,9 @@ spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - n8n..sokol.sh
+        - n8n.sokol.sh
   rules:
-  - host: n8n..sokol.sh
+  - host: n8n.sokol.sh
     http:
       paths:
       - pathType: Prefix

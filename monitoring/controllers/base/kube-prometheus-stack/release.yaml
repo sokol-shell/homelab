@@ -42,7 +42,7 @@ spec:
       ingress:
         enabled: true
         hosts:
-          - grafana..sokol.sh
+          - grafana.sokol.sh
         tls:
           - hosts:
-              - grafana..sokol.sh
+              - grafana.sokol.sh

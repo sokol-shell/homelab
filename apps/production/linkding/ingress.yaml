@@ -7,9 +7,9 @@ spec:
   ingressClassName: traefik
   tls:
     - hosts:
-        - linkding..sokol.sh
+        - linkding.sokol.sh
   rules:
-  - host: linkding..sokol.sh
+  - host: linkding.sokol.sh
     http:
       paths:
       - pathType: Prefix

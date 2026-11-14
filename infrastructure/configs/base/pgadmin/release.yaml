@@ -31,13 +31,13 @@ spec:
       enabled: true
       ingressClassName: traefik
       hosts:
-        - host: pgadmin..sokol.sh
+        - host: pgadmin.sokol.sh
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - pgadmin..sokol.sh
+            - pgadmin.sokol.sh
     persistentVolume:
       size: "1Gi"
     existingSecret: pgadmin-credentials

@@ -10,4 +10,4 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - ".sokol.sh"
-    - "*..sokol.sh"
+    - "*.sokol.sh"
