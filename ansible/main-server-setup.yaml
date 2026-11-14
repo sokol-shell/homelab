@@ -9,5 +9,3 @@
 
   roles:
     - role: geerlingguy.security
-    - role: geerlingguy.swap
-    - role: geerlingguy.docker

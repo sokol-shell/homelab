@@ -1,5 +1,2 @@
 ---
 ansible_ssh_private_key_file: ~/.ssh/keys/homeserver
-swap_file_size_mb: '2048'
-swap_swappiness: 30
-swap_file_state: present # change to absent if swap needs to be removed

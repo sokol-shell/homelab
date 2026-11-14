@@ -1,5 +1,8 @@
 homeserver:
   hosts:
     main_server:
-      ansible_host: 192.168.1.97
+      ansible_host: homeserver-lan
       ansible_user: ubuntu
+    worker:
+      ansible_host: homeserver2-lan
+      ansible_user: ubuntu2

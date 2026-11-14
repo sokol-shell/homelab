@@ -3,7 +3,4 @@ collections:
   - community.docker
 
 roles:
-  - geerlingguy.swap
   - geerlingguy.security
-  - geerlingguy.docker
-  - geerlingguy.nginx
