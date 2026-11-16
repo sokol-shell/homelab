@@ -14,3 +14,6 @@ spec:
       owner: miniflux
   monitoring:
     enablePodMonitor: true
+  podSecurityContext:
+    appArmorProfile:
+      type: Unconfined
