@@ -12,6 +12,7 @@ spec:
       labels:
         io.kompose.service: atuin
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000 # atuin user created in the upstream Dockerfile

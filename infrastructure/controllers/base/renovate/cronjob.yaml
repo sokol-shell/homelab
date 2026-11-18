@@ -10,6 +10,7 @@ spec:
     spec:
       template:
         spec:
+          automountServiceAccountToken: false
           containers:
             - name: renovate
               image: renovate/renovate:latest

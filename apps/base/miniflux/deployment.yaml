@@ -12,6 +12,7 @@ spec:
       labels:
         app: miniflux
     spec:
+      automountServiceAccountToken: false
       securityContext:
         fsGroup: 65534 # nofsgroup group ID
         runAsUser: 65534 # nouser user ID
