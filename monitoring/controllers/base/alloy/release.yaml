@@ -21,24 +21,16 @@ spec:
   values:
     alloy:
       configMap:
-        # The pipeline lives in its own ConfigMap (config.alloy) next to this
-        # release, so it can be edited without touching Helm values.
         create: false
         name: alloy-config
         key: config.alloy
-      # Where loki.source.file keeps its positions file (read offset per log
-      # file). Backed by a hostPath below so a restarted pod resumes where the
-      # previous one stopped instead of re-shipping or skipping lines.
       storagePath: /var/lib/alloy
       extraEnv:
-        # Used by discovery.kubernetes to only watch pods on this node.
         - name: NODE_NAME
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
       mounts:
-        # Mounts the node's /var/log read-only; container logs are under
-        # /var/log/pods/<namespace>_<pod>_<uid>/<container>/*.log.
         varlog: true
         extra:
           - name: positions
@@ -54,10 +46,8 @@ spec:
             - ALL
         seccompProfile:
           type: RuntimeDefault
-      # Telemetry back to Grafana Labs.
       enableReporting: false
     controller:
-      # One pod per node: each one can only see the log files on its own node.
       type: daemonset
       volumes:
         extra:

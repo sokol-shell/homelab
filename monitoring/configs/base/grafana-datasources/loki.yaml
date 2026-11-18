@@ -1,6 +1,3 @@
-# Picked up by the grafana-sc-datasources sidecar in the kube-prometheus-stack
-# Grafana pod, which watches for this label and writes the file into
-# /etc/grafana/provisioning/datasources.
 apiVersion: v1
 kind: ConfigMap
 metadata:
