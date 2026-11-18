@@ -115,8 +115,7 @@ spec:
         - port: 8000
           protocol: TCP
   egress:
-    # kube-apiserver on the control-plane node. kube-router evaluates egress
-    # after the service DNAT, so the node IP is what must be allowed here.
+    # kube-apiserver on the control-plane node
     - to:
         - ipBlock:
             cidr: 192.168.1.97/32

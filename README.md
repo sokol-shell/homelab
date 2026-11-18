@@ -40,6 +40,10 @@ A web-based administration UI, deployed via helm, for browsing and managing the 
 
 I installed the kube-prometheus-stack helm chart and use Grafana to monitor the whole cluster. CloudNativePG custom dashboard has been added to monitor Postgres database clusters.
 
+### 2. [Loki](https://grafana.com/oss/loki/) + [Grafana Alloy](https://grafana.com/oss/alloy-opentelemetry-collector/)
+
+Logs from every pod in the cluster can be viewed in Grafana. Alloy runs as a DaemonSet, pushes the logs to Loki and Loki keeps 30 days of logs.
+
 ## Apps
 
 ### 1. [Miniflux](https://miniflux.app/)

@@ -1,0 +1,59 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: alloy
+  namespace: monitoring
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: alloy
+      version: "1.16.*"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: monitoring
+      interval: 12h
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  values:
+    alloy:
+      configMap:
+        create: false
+        name: alloy-config
+        key: config.alloy
+      storagePath: /var/lib/alloy
+      extraEnv:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+      mounts:
+        varlog: true
+        extra:
+          - name: positions
+            mountPath: /var/lib/alloy
+      securityContext:
+        # containerd writes log files as root with mode 0640, so the tailer has
+        # to be root to read them. No capabilities are needed on top of that.
+        runAsUser: 0
+        runAsGroup: 0
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        seccompProfile:
+          type: RuntimeDefault
+      enableReporting: false
+    controller:
+      type: daemonset
+      volumes:
+        extra:
+          - name: positions
+            hostPath:
+              path: /var/lib/alloy
+              type: DirectoryOrCreate
+    serviceMonitor:
+      enabled: true
