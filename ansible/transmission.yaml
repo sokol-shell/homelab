@@ -1,7 +1,0 @@
----
-- name: transmission over vpn docker container deployment
-  hosts: all
-  become: true
-
-  roles:
-    - role: transmission
