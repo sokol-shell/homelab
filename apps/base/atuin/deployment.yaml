@@ -36,6 +36,10 @@ spec:
               value: "8888"
             - name: ATUIN_OPEN_REGISTRATION
               value: "false"
+            - name: ATUIN_TRUSTED_PROXIES
+              value: 10.42.0.0/16
+            - name: ATUIN_TRUSTED_PROXY_HEADER
+              value: CF-Connecting-IP
           image: ghcr.io/atuinsh/atuin:18.24.8
           name: atuin
           ports:
