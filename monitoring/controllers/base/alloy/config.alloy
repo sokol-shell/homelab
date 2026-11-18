@@ -1,0 +1,93 @@
+// Ship every container's stdout/stderr on this node to Loki.
+//
+// containerd writes each container's output to
+//   /var/log/pods/<namespace>_<pod>_<uid>/<container>/<restart>.log
+// on the node. The pipeline below finds the pods on this node through the
+// kube API, maps each container to its log file, tails it and pushes the
+// lines to Loki with namespace/pod/container/app labels.
+
+// Every pod scheduled on this node (NODE_NAME is injected by the chart from
+// spec.nodeName). Other nodes' log files are not mounted here anyway.
+discovery.kubernetes "pods" {
+  role = "pod"
+
+  selectors {
+    role  = "pod"
+    field = "spec.nodeName=" + sys.env("NODE_NAME")
+  }
+}
+
+// Turn pod metadata into Loki labels and the log file path. Keep the label
+// set small and bounded: every unique combination is a separate stream.
+discovery.relabel "pods" {
+  targets = discovery.kubernetes.pods.targets
+
+  rule {
+    source_labels = ["__meta_kubernetes_namespace"]
+    target_label  = "namespace"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_name"]
+    target_label  = "pod"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_container_name"]
+    target_label  = "container"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_node_name"]
+    target_label  = "node"
+  }
+
+  // app: prefer the app.kubernetes.io/name label most Helm charts set, and
+  // let a plain "app" label (used by the apps in this repo) override it.
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+    regex         = "(.+)"
+    target_label  = "app"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app"]
+    regex         = "(.+)"
+    target_label  = "app"
+  }
+
+  // /var/log/pods/<namespace>_<pod>_<uid>/<container>/*.log
+  rule {
+    source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+    separator     = "/"
+    target_label  = "__path__"
+    replacement   = "/var/log/pods/*$1/*.log"
+  }
+}
+
+// Expand the globs above into concrete files, re-checked periodically so new
+// pods and rotated files are picked up.
+local.file_match "pods" {
+  path_targets = discovery.relabel.pods.output
+}
+
+// Tail the files. Read offsets are persisted under --storage.path
+// (/var/lib/alloy, a hostPath) so restarts resume where they left off.
+loki.source.file "pods" {
+  targets    = local.file_match.pods.targets
+  forward_to = [loki.process.pods.receiver]
+}
+
+// Strip the CRI framing containerd adds to every line
+// ("<timestamp> <stdout|stderr> <F|P> <message>") and reassemble partial lines.
+loki.process "pods" {
+  stage.cri {}
+
+  forward_to = [loki.write.loki.receiver]
+}
+
+loki.write "loki" {
+  endpoint {
+    url = "http://loki.monitoring.svc:3100/loki/api/v1/push"
+  }
+}

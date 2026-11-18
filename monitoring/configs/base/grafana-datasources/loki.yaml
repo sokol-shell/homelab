@@ -1,0 +1,18 @@
+# Picked up by the grafana-sc-datasources sidecar in the kube-prometheus-stack
+# Grafana pod, which watches for this label and writes the file into
+# /etc/grafana/provisioning/datasources.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource-loki
+  labels:
+    grafana_datasource: "1"
+data:
+  loki.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        type: loki
+        uid: loki
+        access: proxy
+        url: http://loki.monitoring.svc:3100
