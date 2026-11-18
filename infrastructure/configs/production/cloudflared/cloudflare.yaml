@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: cloudflared
-        image: cloudflare/cloudflared:latest
+        image: cloudflare/cloudflared:2026.11.1
         args:
         - tunnel
 
@@ -71,8 +71,10 @@ data:
     no-autoupdate: true
 
     ingress:
-    - hostname: homelab-.sokol.sh
-      service: http://linkding:9090
+    - hostname: "*.sokol.sh"
+      service: https://traefik.kube-system.svc.cluster.local:443
+      originRequest:
+        originServerName: sokol.sh
 
     # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.
     - service: http_status:404
