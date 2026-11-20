@@ -40,7 +40,7 @@ spec:
               value: 10.42.0.0/16
             - name: ATUIN_TRUSTED_PROXY_HEADER
               value: CF-Connecting-IP
-          image: ghcr.io/atuinsh/atuin:18.24.8
+          image: ghcr.io/atuinsh/atuin:18.25.1
           name: atuin
           ports:
             - containerPort: 8888
