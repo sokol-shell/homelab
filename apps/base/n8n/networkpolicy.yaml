@@ -1,0 +1,144 @@
+# By default, deny all ingress and egress for every pod in the namespace.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+# Every pod may resolve DNS via CoreDNS.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+---
+# App pod: ingress only from traefik; egress to its own database and to the
+# internet on 443.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: n8n-app
+spec:
+  podSelector:
+    matchLabels:
+      app: n8n
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+      ports:
+        - port: 3008
+          protocol: TCP
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              cnpg.io/cluster: n8n
+      ports:
+        - port: 5432
+          protocol: TCP
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.42.0.0/16     # pods
+              - 10.43.0.0/16     # services
+              - 192.168.1.0/24   # LAN and nodes
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+      ports:
+        - port: 443
+          protocol: TCP
+---
+# Database pods: ingress from the app, pgadmin, prometheus and the CNPG
+# operator; egress to the kube API and sibling instances.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: n8n-db
+spec:
+  podSelector:
+    matchLabels:
+      cnpg.io/cluster: n8n
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: n8n
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: pgadmin
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: pgadmin4
+        - podSelector:
+            matchLabels:
+              cnpg.io/cluster: n8n
+      ports:
+        - port: 5432
+          protocol: TCP
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - port: 9187
+          protocol: TCP
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: cnpg-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: cloudnative-pg
+      ports:
+        - port: 8000
+          protocol: TCP
+  egress:
+    # kube-apiserver on the control-plane node
+    - to:
+        - ipBlock:
+            cidr: 192.168.1.91/32
+      ports:
+        - port: 6443
+          protocol: TCP
+    - to:
+        - podSelector:
+            matchLabels:
+              cnpg.io/cluster: n8n
+      ports:
+        - port: 5432
+          protocol: TCP
